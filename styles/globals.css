@@ -1,0 +1,82 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+@import "~slick-carousel/slick/slick.css";
+@import "~slick-carousel/slick/slick-theme.css";
+
+/* グローバルな設定 */
+body {
+  @apply bg-zinc-900 h-full overflow-x-hidden;
+}
+
+#__next {
+  @apply h-full;
+}
+
+html {
+  @apply h-full;
+}
+
+@media (min-width: 1024px) {
+  .lg\:h-7 {
+    height: 2.0rem !important;
+  }
+}
+
+/* スライダーとポップアップの調整 */
+.relative {
+  position: relative;
+  overflow: visible; /* ポップアップを隠さない */
+}
+
+.flex {
+  overflow: visible; /* 子要素も隠れないようにする */
+}
+
+.MovieCard-popup {
+  z-index: 9999; /* ポップアップを最前面に */
+  position: absolute;
+}
+
+/* 前後ボタンのデザイン */
+.slider-button {
+  z-index: 50; /* ボタンをポップアップよりも下に */
+  background-color: rgba(0, 0, 0, 0.6);
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+.slider-button:hover {
+  background-color: rgba(255, 255, 255, 0.8);
+  color: black;
+}
+
+/* グローバルな修正 */
+.group {
+  position: relative;
+  overflow: visible; /* ポップアップを隠さない */
+}
+
+.MovieCard-popup {
+  z-index: 9999; /* ポップアップを最前面に */
+  overflow: visible;
+}
+
+/* スライダー全体の修正 */
+.slider-container {
+  position: relative;
+  z-index: 1; /* スライダーをポップアップより低く設定 */
+}
+
+.slick-slide {
+  position: static; /* スタッキングコンテキストを解除 */
+}
+
+.movie-slider {
+  overflow: visible; /* ポップアップが隠れないように */
+}
+
+
+
+
