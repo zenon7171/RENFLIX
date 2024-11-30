@@ -41,6 +41,7 @@ const Transition = React.forwardRef(function Transition(
 // 新着動画リスト用カード
 const MovieCard: React.FC<{ movie: MovieInterface }> = ({ movie }) => {
   const router = useRouter();
+  const [isLoaded, setIsLoaded] = useState(false); // スケルトンスクリーン用の状態
 
   const handleThumbnailClick = () => {
     router.push(`/watch/${movie.id}`);
@@ -48,10 +49,17 @@ const MovieCard: React.FC<{ movie: MovieInterface }> = ({ movie }) => {
 
   return (
     <div className="bg-[#202020] rounded-md overflow-hidden shadow-md">
+      {/* スケルトンスクリーン */}
+      {!isLoaded && <div className="w-full h-36 bg-gray-700 animate-pulse" />}
+      {/* サムネイル画像 */}
       <img
         src={movie.thumbnailUrl}
         alt={movie.title}
-        className="w-full h-36 object-cover cursor-pointer"
+        className={`w-full h-36 object-cover cursor-pointer ${
+          isLoaded ? 'opacity-100' : 'opacity-0'
+        } transition-opacity duration-300`}
+        loading="lazy"
+        onLoad={() => setIsLoaded(true)} // ロード完了時にスケルトン非表示
         onClick={handleThumbnailClick}
       />
       <div className="p-3">
