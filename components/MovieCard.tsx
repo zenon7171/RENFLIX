@@ -21,6 +21,7 @@ const MovieCard: React.FC<MovieCardProps> = ({ data }) => {
     width: number;
   } | null>(null);
   const [isHovered, setIsHovered] = useState(false);
+  const [isLoaded, setIsLoaded] = useState(false); // スケルトン用の状態
 
   const redirectToWatch = useCallback(() => router.push(`/watch/${data.id}`), [router, data.id]);
 
@@ -58,6 +59,11 @@ const MovieCard: React.FC<MovieCardProps> = ({ data }) => {
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
+      {/* スケルトンスクリーン */}
+      {!isLoaded && (
+        <div className="absolute top-0 left-0 w-full h-full bg-gray-700 animate-pulse rounded-md" />
+      )}
+
       {/* サムネイル画像 */}
       <img
         onClick={redirectToWatch}
@@ -65,17 +71,19 @@ const MovieCard: React.FC<MovieCardProps> = ({ data }) => {
         alt="Movie"
         draggable={false}
         loading="lazy"
+        onLoad={() => setIsLoaded(true)} // ロード完了でスケルトンを非表示
         className={`
           cursor-pointer
           object-cover
           transition-all
-          duration300
+          duration-300
           ease-in-out
           shadow-xl
           rounded-md
           ${isHovered ? 'opacity-90 scale-105' : 'opacity-100 scale-100'}
           w-full
           h-[12vw]
+          ${isLoaded ? '' : 'opacity-0'} // ロード中は非表示
         `}
       />
       {/* ポップアップ */}
