@@ -59,6 +59,9 @@ const MovieCard: React.FC<MovieCardProps> = ({ data }) => {
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
+      {/* サムネイル画像をプリロード */}
+      <link rel="preload" href={data.thumbnailUrl} as="image" />
+
       {/* スケルトンスクリーン */}
       {!isLoaded && (
         <div className="absolute top-0 left-0 w-full h-full bg-gray-700 animate-pulse rounded-md" />
@@ -70,20 +73,19 @@ const MovieCard: React.FC<MovieCardProps> = ({ data }) => {
         src={data.thumbnailUrl}
         alt="Movie"
         draggable={false}
-        loading="lazy"
+        loading="eager" // Lazy Loading を無効化
         onLoad={() => setIsLoaded(true)} // ロード完了でスケルトンを非表示
         className={`
           cursor-pointer
           object-cover
-          transition-all
-          duration-300
+          transition-opacity
+          duration-100
           ease-in-out
           shadow-xl
           rounded-md
-          ${isHovered ? 'opacity-90 scale-105' : 'opacity-100 scale-100'}
           w-full
           h-[12vw]
-          ${isLoaded ? '' : 'opacity-0'} // ロード中は非表示
+          ${isLoaded ? 'opacity-100' : 'opacity-0'} // ロード中は非表示
         `}
       />
       {/* ポップアップ */}
@@ -115,13 +117,9 @@ const MovieCard: React.FC<MovieCardProps> = ({ data }) => {
               src={data.thumbnailUrl}
               alt="Movie"
               draggable={false}
-              loading="lazy"
               className="
                 cursor-pointer
                 object-cover
-                transition-all
-                duration-300
-                ease-in-out
                 shadow-xl
                 rounded-t-md
                 w-full
@@ -134,9 +132,6 @@ const MovieCard: React.FC<MovieCardProps> = ({ data }) => {
                 p-2
                 lg:p-4
                 w-full
-                transition
-                duration-300
-                ease-in-out
                 shadow-md
                 bg-zinc-800
                 rounded-b-md
@@ -156,8 +151,6 @@ const MovieCard: React.FC<MovieCardProps> = ({ data }) => {
                     flex
                     justify-center
                     items-center
-                    transition
-                    hover:bg-neutral-300
                   "
                 >
                   <PlayIcon className="text-black w-4 lg:w-6" />
@@ -168,7 +161,6 @@ const MovieCard: React.FC<MovieCardProps> = ({ data }) => {
                   className="
                     cursor-pointer
                     ml-auto
-                    group/item
                     w-6
                     h-6
                     lg:w-10
@@ -179,14 +171,11 @@ const MovieCard: React.FC<MovieCardProps> = ({ data }) => {
                     flex
                     justify-center
                     items-center
-                    transition
-                    hover:border-neutral-300
                   "
                 >
-                  <ChevronDownIcon className="text-white group-hover/item:text-neutral-300 w-4 lg:w-6" />
+                  <ChevronDownIcon className="text-white w-4 lg:w-6" />
                 </div>
               </div>
-              {/* 日付表示 */}
               <p className="text-green-400 font-semibold mt-4">
                 {isNew(new Date(data.createdAt)) && "NEW"}{" "}
                 <span className="text-white">{data.title}</span>
