@@ -3,8 +3,8 @@ import { useCallback, useState } from 'react';
 import { NextPageContext } from 'next';
 import { getSession, signIn } from 'next-auth/react';
 import { useRouter } from 'next/router';
-import { FcGoogle } from 'react-icons/fc';
-import { FaGithub } from 'react-icons/fa';
+// import { FcGoogle } from 'react-icons/fc'; // コメントアウト
+// import { FaGithub } from 'react-icons/fa'; // コメントアウト
 
 import Input from '@/components/Input';
 
@@ -106,6 +106,8 @@ const Auth = () => {
             <button onClick={variant === 'login' ? login : register} className="bg-red-600 py-3 text-white rounded-md w-full mt-10 hover:bg-red-700 transition">
               {variant === 'login' ? 'Login' : 'Sign up'}
             </button>
+            {/* コメントアウト部分 */}
+            {/* 
             <div className="flex flex-row items-center gap-4 mt-8 justify-center">
               <div onClick={() => signIn('google', { callbackUrl: '/profiles' })} className="w-10 h-10 bg-white rounded-full flex items-center justify-center cursor-pointer hover:opacity-80 transition">
                 <FcGoogle size={32} />
@@ -114,6 +116,7 @@ const Auth = () => {
                 <FaGithub size={32} />
               </div>
             </div>
+            */}
             <p className="text-neutral-500 mt-12">
               {variant === 'login' ? '初めて利用する方はこちら' : '既にアカウントをお持ちですか？'}
               <span onClick={toggleVariant} className="text-white ml-1 hover:underline cursor-pointer">
