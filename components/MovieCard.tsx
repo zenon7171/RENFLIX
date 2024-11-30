@@ -64,6 +64,7 @@ const MovieCard: React.FC<MovieCardProps> = ({ data }) => {
         src={data.thumbnailUrl}
         alt="Movie"
         draggable={false}
+        loading="lazy"
         className={`
           cursor-pointer
           object-cover
@@ -106,6 +107,7 @@ const MovieCard: React.FC<MovieCardProps> = ({ data }) => {
               src={data.thumbnailUrl}
               alt="Movie"
               draggable={false}
+              loading="lazy"
               className="
                 cursor-pointer
                 object-cover
