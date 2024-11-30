@@ -73,7 +73,6 @@ const MovieCard: React.FC<MovieCardProps> = ({ data }) => {
         src={data.thumbnailUrl}
         alt="Movie"
         draggable={false}
-        loading="eager" // Lazy Loading を無効化
         onLoad={() => setIsLoaded(true)} // ロード完了でスケルトンを非表示
         className={`
           cursor-pointer
