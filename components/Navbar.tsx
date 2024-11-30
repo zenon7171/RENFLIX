@@ -131,7 +131,7 @@ const Navbar = () => {
         }`}
       >
         <img
-          src="/images/logo.png"
+          src="https://raw.githubusercontent.com/zenon7171/RENFLIX/refs/heads/main/public/images/logo.png"
           className="h-4 lg:h-7 cursor-pointer"
           alt="Logo"
           onClick={navigateToHome}
