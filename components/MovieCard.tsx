@@ -3,6 +3,7 @@ import { createPortal } from 'react-dom';
 import { useRouter } from 'next/router';
 import { ChevronDownIcon } from '@heroicons/react/24/outline';
 import { PlayIcon } from '@heroicons/react/24/solid';
+import useSWR from 'swr';
 
 import { MovieInterface } from '@/types';
 import FavoriteButton from '@/components/FavoriteButton';
@@ -11,6 +12,8 @@ import useInfoModalStore from '@/hooks/useInfoModalStore';
 interface MovieCardProps {
   data: MovieInterface;
 }
+
+const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
 const MovieCard: React.FC<MovieCardProps> = ({ data }) => {
   const router = useRouter();
@@ -23,7 +26,14 @@ const MovieCard: React.FC<MovieCardProps> = ({ data }) => {
   const [isHovered, setIsHovered] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false); // スケルトン用の状態
 
-  const redirectToWatch = useCallback(() => router.push(`/watch/${data.id}`), [router, data.id]);
+  // SWRでキャッシュを管理
+  const { data: cachedData } = useSWR(`/api/movie/${data.id}`, fetcher, {
+    dedupingInterval: 3600000, // キャッシュ有効期限を1時間に設定
+  });
+
+  const movieData = cachedData || data; // キャッシュされたデータがない場合はプロップスを使用
+
+  const redirectToWatch = useCallback(() => router.push(`/watch/${movieData.id}`), [router, movieData.id]);
 
   const isNew = (createdAt: Date) => {
     const now = new Date();
@@ -60,7 +70,7 @@ const MovieCard: React.FC<MovieCardProps> = ({ data }) => {
       onMouseLeave={handleMouseLeave}
     >
       {/* サムネイル画像をプリロード */}
-      <link rel="preload" href={data.thumbnailUrl} as="image" />
+      <link rel="preload" href={movieData.thumbnailUrl} as="image" />
 
       {/* スケルトンスクリーン */}
       {!isLoaded && (
@@ -70,7 +80,7 @@ const MovieCard: React.FC<MovieCardProps> = ({ data }) => {
       {/* サムネイル画像 */}
       <img
         onClick={redirectToWatch}
-        src={data.thumbnailUrl}
+        src={movieData.thumbnailUrl}
         alt="Movie"
         draggable={false}
         loading="eager" // Lazy Loading を無効化
@@ -114,7 +124,7 @@ const MovieCard: React.FC<MovieCardProps> = ({ data }) => {
             {/* ポップアップ内の画像 */}
             <img
               onClick={redirectToWatch}
-              src={data.thumbnailUrl}
+              src={movieData.thumbnailUrl}
               alt="Movie"
               draggable={false}
               className="
@@ -155,9 +165,9 @@ const MovieCard: React.FC<MovieCardProps> = ({ data }) => {
                 >
                   <PlayIcon className="text-black w-4 lg:w-6" />
                 </div>
-                <FavoriteButton movieId={data.id} />
+                <FavoriteButton movieId={movieData.id} />
                 <div
-                  onClick={() => openModal(data?.id)}
+                  onClick={() => openModal(movieData.id)}
                   className="
                     cursor-pointer
                     ml-auto
@@ -177,17 +187,17 @@ const MovieCard: React.FC<MovieCardProps> = ({ data }) => {
                 </div>
               </div>
               <p className="text-green-400 font-semibold mt-4">
-                {isNew(new Date(data.createdAt)) && "NEW"}{" "}
-                <span className="text-white">{data.title}</span>
+                {isNew(new Date(movieData.createdAt)) && "NEW"}{" "}
+                <span className="text-white">{movieData.title}</span>
               </p>
               <div className="flex flex-row mt-3 gap-2 items-center">
-                <p className="text-white">{formatDate(new Date(data.createdAt))}</p>
+                <p className="text-white">{formatDate(new Date(movieData.createdAt))}</p>
               </div>
               <div className="flex flex-row gap-2 items-center">
-                <p className="text-white text-[10px] lg:text-sm">再生時間:{data.duration}</p>
+                <p className="text-white text-[10px] lg:text-sm">再生時間:{movieData.duration}</p>
               </div>
               <div className="flex flex-row items-center gap-2 mt-4 text-[8px] text-white lg:text-sm">
-                <p>カテゴリー:{data.genre}</p>
+                <p>カテゴリー:{movieData.genre}</p>
               </div>
             </div>
           </div>,
